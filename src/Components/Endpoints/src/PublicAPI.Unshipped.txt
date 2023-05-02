@@ -10,7 +10,7 @@ Microsoft.AspNetCore.Components.ComponentApplicationBuilder.Build() -> Microsoft
 Microsoft.AspNetCore.Components.ComponentApplicationBuilder.ComponentApplicationBuilder() -> void
 Microsoft.AspNetCore.Components.Endpoints.IComponentPrerenderer
 Microsoft.AspNetCore.Components.Endpoints.IComponentPrerenderer.Dispatcher.get -> Microsoft.AspNetCore.Components.Dispatcher!
-Microsoft.AspNetCore.Components.Endpoints.IComponentPrerenderer.PrerenderComponentAsync(Microsoft.AspNetCore.Http.HttpContext! httpContext, System.Type! componentType, Microsoft.AspNetCore.Components.RenderMode renderMode, Microsoft.AspNetCore.Components.ParameterView parameters) -> System.Threading.Tasks.ValueTask<Microsoft.AspNetCore.Html.IHtmlAsyncContent!>
+Microsoft.AspNetCore.Components.Endpoints.IComponentPrerenderer.PrerenderComponentAsync(Microsoft.AspNetCore.Http.HttpContext! httpContext, System.Type! componentType, Microsoft.AspNetCore.Components.IComponentRenderMode! renderMode, Microsoft.AspNetCore.Components.ParameterView parameters) -> System.Threading.Tasks.ValueTask<Microsoft.AspNetCore.Html.IHtmlAsyncContent!>
 Microsoft.AspNetCore.Components.Endpoints.IComponentPrerenderer.PrerenderPersistedStateAsync(Microsoft.AspNetCore.Http.HttpContext! httpContext, Microsoft.AspNetCore.Components.PersistedStateSerializationMode serializationMode) -> System.Threading.Tasks.ValueTask<Microsoft.AspNetCore.Html.IHtmlContent!>
 Microsoft.AspNetCore.Components.Endpoints.IRazorComponentsBuilder
 Microsoft.AspNetCore.Components.Endpoints.IRazorComponentsBuilder.Services.get -> Microsoft.Extensions.DependencyInjection.IServiceCollection!
@@ -25,7 +25,7 @@ Microsoft.AspNetCore.Components.Endpoints.RazorComponentResult.PreventStreamingR
 Microsoft.AspNetCore.Components.Endpoints.RazorComponentResult.RazorComponentResult(System.Type! componentType) -> void
 Microsoft.AspNetCore.Components.Endpoints.RazorComponentResult.RazorComponentResult(System.Type! componentType, object? parameters) -> void
 Microsoft.AspNetCore.Components.Endpoints.RazorComponentResult.RazorComponentResult(System.Type! componentType, System.Collections.Generic.IReadOnlyDictionary<string!, object?>? parameters) -> void
-Microsoft.AspNetCore.Components.Endpoints.RazorComponentResult.RenderMode.get -> Microsoft.AspNetCore.Components.RenderMode
+Microsoft.AspNetCore.Components.Endpoints.RazorComponentResult.RenderMode.get -> Microsoft.AspNetCore.Components.IComponentRenderMode?
 Microsoft.AspNetCore.Components.Endpoints.RazorComponentResult.RenderMode.set -> void
 Microsoft.AspNetCore.Components.Endpoints.RazorComponentResult.StatusCode.get -> int?
 Microsoft.AspNetCore.Components.Endpoints.RazorComponentResult.StatusCode.set -> void

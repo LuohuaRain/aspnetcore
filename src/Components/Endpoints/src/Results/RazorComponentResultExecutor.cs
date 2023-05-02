@@ -45,7 +45,7 @@ public class RazorComponentResultExecutor
 
     internal static Task RenderComponentToResponse(
         HttpContext httpContext,
-        RenderMode renderMode,
+        IComponentRenderMode? renderMode,
         Type componentType,
         IReadOnlyDictionary<string, object?>? componentParameters,
         bool preventStreamingRendering)
@@ -64,13 +64,13 @@ public class RazorComponentResultExecutor
 
             await using var writer = CreateResponseWriter(httpContext.Response.Body);
 
-            // Note that we always use Static rendering mode for the top-level output from a RazorComponentResult,
+            // Note that we don't set any interactive rendering mode for the top-level output from a RazorComponentResult,
             // because you never want to serialize the invocation of RazorComponentResultHost. Instead, that host
             // component takes care of switching into your desired render mode when it produces its own output.
             var htmlContent = (EndpointHtmlRenderer.PrerenderedComponentHtmlContent)(await endpointHtmlRenderer.PrerenderComponentAsync(
                 httpContext,
                 typeof(RazorComponentEndpointHost),
-                RenderMode.Static,
+                null,
                 hostParameters,
                 waitForQuiescence: preventStreamingRendering));
 

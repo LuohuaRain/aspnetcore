@@ -3,6 +3,7 @@
 
 using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Components.Web.HtmlRendering;
+using Microsoft.AspNetCore.Components.Web.RenderModes;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,14 +17,14 @@ internal partial class EndpointHtmlRenderer
     public ValueTask<IHtmlAsyncContent> PrerenderComponentAsync(
         HttpContext httpContext,
         Type componentType,
-        RenderMode prerenderMode,
+        IComponentRenderMode prerenderMode,
         ParameterView parameters)
         => PrerenderComponentAsync(httpContext, componentType, prerenderMode, parameters, waitForQuiescence: true);
 
     public async ValueTask<IHtmlAsyncContent> PrerenderComponentAsync(
         HttpContext httpContext,
         Type componentType,
-        RenderMode prerenderMode,
+        IComponentRenderMode? prerenderMode,
         ParameterView parameters,
         bool waitForQuiescence)
     {
@@ -46,11 +47,11 @@ internal partial class EndpointHtmlRenderer
         {
             var result = prerenderMode switch
             {
-                RenderMode.Server => NonPrerenderedServerComponent(httpContext, GetOrCreateInvocationId(httpContext), componentType, parameters),
-                RenderMode.ServerPrerendered => await PrerenderedServerComponentAsync(httpContext, GetOrCreateInvocationId(httpContext), componentType, parameters),
-                RenderMode.Static => await StaticComponentAsync(componentType, parameters),
-                RenderMode.WebAssembly => NonPrerenderedWebAssemblyComponent(componentType, parameters),
-                RenderMode.WebAssemblyPrerendered => await PrerenderedWebAssemblyComponentAsync(componentType, parameters),
+                Server { Prerender: true } => await PrerenderedServerComponentAsync(httpContext, GetOrCreateInvocationId(httpContext), componentType, parameters),
+                Server => NonPrerenderedServerComponent(httpContext, GetOrCreateInvocationId(httpContext), componentType, parameters),
+                WebAssembly { Prerender: true } => await PrerenderedWebAssemblyComponentAsync(componentType, parameters),
+                WebAssembly => NonPrerenderedWebAssemblyComponent(componentType, parameters),
+                null => await StaticComponentAsync(componentType, parameters),
                 _ => throw new ArgumentException(Resources.FormatUnsupportedRenderMode(prerenderMode), nameof(prerenderMode)),
             };
 

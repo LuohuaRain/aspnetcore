@@ -3,6 +3,7 @@
 
 using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Components.Infrastructure;
+using Microsoft.AspNetCore.Components.Web.RenderModes;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Http;
@@ -55,25 +56,21 @@ internal partial class EndpointHtmlRenderer
     }
 
     // Internal for test only
-    internal static void UpdateSaveStateRenderMode(HttpContext httpContext, RenderMode mode)
+    internal static void UpdateSaveStateRenderMode(HttpContext httpContext, IComponentRenderMode mode)
     {
         // TODO: This will all have to change when we support multiple render modes in the same response
-        if (mode == RenderMode.ServerPrerendered || mode == RenderMode.WebAssemblyPrerendered)
+        if (mode is Server { Prerender: true } || mode is WebAssembly { Prerender: true })
         {
+            var currentInvocation = mode is WebAssembly
+                ? InvokedRenderModes.Mode.Server
+                : InvokedRenderModes.Mode.WebAssembly;
+
             if (!httpContext.Items.TryGetValue(InvokedRenderModesKey, out var result))
             {
-                result = new InvokedRenderModes(mode is RenderMode.ServerPrerendered ?
-                    InvokedRenderModes.Mode.Server :
-                    InvokedRenderModes.Mode.WebAssembly);
-
-                httpContext.Items[InvokedRenderModesKey] = result;
+                httpContext.Items[InvokedRenderModesKey] = new InvokedRenderModes(currentInvocation);
             }
             else
             {
-                var currentInvocation = mode is RenderMode.ServerPrerendered ?
-                    InvokedRenderModes.Mode.Server :
-                    InvokedRenderModes.Mode.WebAssembly;
-
                 var invokedMode = (InvokedRenderModes)result!;
                 if (invokedMode.Value != currentInvocation)
                 {

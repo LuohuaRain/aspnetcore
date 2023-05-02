@@ -412,23 +412,6 @@ public sealed class RenderTreeBuilder : IDisposable
     }
 
     /// <summary>
-    /// TEMPORARY API until Razor compiler is updated. This will be removed before .NET 8 ships.
-    /// </summary>
-    public void AddAttribute(int sequence, string name, IComponentRenderMode renderMode)
-    {
-        // This is a TEMPORARY API until the Razor compiler is updated to implement the @rendermode directive attribute.
-        // In preview releases until that is implemented, developers may use the syntax <SomeComponent rendermode="@RenderMode.WebAssembly.Instance" />
-        if (!string.Equals("name", "rendermode", StringComparison.Ordinal))
-        {
-            throw new InvalidOperationException($"{nameof(IComponentRenderMode)} attribute values may only be used on attributes named 'rendermode'.");
-        }
-
-        // When the Razor compiler is updated, <SomeComponent @rendermode="@RenderMode.WebAssembly" />  would compile directly as a call
-        // to AddComponentRenderMode(RenderMode.WebAssembly), which must appear after all attributes
-        AddComponentRenderMode(sequence, renderMode);
-    }
-
-    /// <summary>
     /// <para>
     /// Appends a frame representing an attribute.
     /// </para>
@@ -560,6 +543,23 @@ public sealed class RenderTreeBuilder : IDisposable
         }
 
         OpenComponentUnchecked(sequence, componentType);
+    }
+
+    /// <summary>
+    /// TEMPORARY API until Razor compiler is updated. This will be removed before .NET 8 ships.
+    /// </summary>
+    public void AddComponentParameter(int sequence, string name, IComponentRenderMode renderMode)
+    {
+        // This is a TEMPORARY API until the Razor compiler is updated to implement the @rendermode directive attribute.
+        // In preview releases until that is implemented, developers may use the syntax <SomeComponent rendermode="@RenderMode.WebAssembly.Instance" />
+        if (!string.Equals(name, "rendermode", StringComparison.Ordinal))
+        {
+            throw new InvalidOperationException($"{nameof(IComponentRenderMode)} attribute values may only be used on attributes named 'rendermode'.");
+        }
+
+        // When the Razor compiler is updated, <SomeComponent @rendermode="@RenderMode.WebAssembly" />  would compile directly as a call
+        // to AddComponentRenderMode(RenderMode.WebAssembly), which must appear after all attributes
+        AddComponentRenderMode(sequence, renderMode);
     }
 
     /// <summary>

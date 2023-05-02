@@ -77,7 +77,7 @@ public class RazorComponentResult : IResult
     /// <summary>
     /// Gets or sets the rendering mode.
     /// </summary>
-    public RenderMode RenderMode { get; set; } = RenderMode.Static;
+    public IComponentRenderMode? RenderMode { get; set; }
 
     /// <summary>
     /// Gets or sets a flag to indicate whether streaming rendering should be prevented. If true, the renderer will
