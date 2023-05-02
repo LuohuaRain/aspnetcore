@@ -3,13 +3,18 @@
 
 namespace Microsoft.AspNetCore.Components;
 
+public interface IDefaultComponentRenderMode
+{
+    static abstract IComponentRenderMode? RenderMode { get; }
+}
+
 /// <summary>
 /// Specifies the default rendering mode for a component type.
 /// </summary>
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
-public class DefaultRenderModeAttribute<T> : DefaultRenderModeAttribute where T: IComponentRenderMode, new()
+public class DefaultRenderModeAttribute<T> : DefaultRenderModeAttribute where T: IDefaultComponentRenderMode, new()
 {
-    public DefaultRenderModeAttribute() : base(new T())
+    public DefaultRenderModeAttribute() : base(T.RenderMode)
     {
     }
 }

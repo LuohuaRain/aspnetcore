@@ -6,8 +6,10 @@ namespace Microsoft.AspNetCore.Components.Web.RenderModes;
 /// <summary>
 /// A <see cref="IComponentRenderMode"/> indicating that the component should be rendered on the client using WebAssembly.
 /// </summary>
-public class WebAssembly : IComponentRenderMode
+public class WebAssembly : IComponentRenderMode, IDefaultComponentRenderMode
 {
+    static IComponentRenderMode? IDefaultComponentRenderMode.RenderMode => RenderMode.WebAssembly;
+
     /// <summary>
     /// Constructs an instance of <see cref="WebAssembly"/>.
     /// </summary>
