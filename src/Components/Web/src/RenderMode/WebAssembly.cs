@@ -1,18 +1,31 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-namespace Microsoft.AspNetCore.Components.Web.RenderMode;
+namespace Microsoft.AspNetCore.Components.Web.RenderModes;
 
 /// <summary>
-/// Represents a render mode in which components run on WebAssembly.
+/// A <see cref="IComponentRenderMode"/> indicating that the component should be rendered on the client using WebAssembly.
 /// </summary>
 public class WebAssembly : IComponentRenderMode
 {
-    static byte IComponentRenderMode.AsNumericValue() => RenderModes.WebAssembly;
+    /// <summary>
+    /// Constructs an instance of <see cref="WebAssembly"/>.
+    /// </summary>
+    public WebAssembly() : this(true)
+    {
+    }
 
     /// <summary>
-    /// Gets an instance of the <see cref="WebAssembly"/> type.
-    /// Caution: This is a temporary API for .NET 8 preview releases until the Razor compiler is updated to support the @rendermode directive attribute.
+    /// Constructs an instance of <see cref="WebAssembly"/>
     /// </summary>
-    public static WebAssembly Instance { get; } = new();
+    /// <param name="prerender">A flag indicating whether the component should first prerender on the server. The default value is true.</param>
+    public WebAssembly(bool prerender)
+    {
+        Prerender = prerender;
+    }
+
+    /// <summary>
+    /// A flag indicating whether the component should first prerender on the server. The default value is true.
+    /// </summary>
+    public bool Prerender { get; }
 }

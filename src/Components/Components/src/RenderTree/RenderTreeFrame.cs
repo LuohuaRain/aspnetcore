@@ -136,7 +136,7 @@ public struct RenderTreeFrame
     // RenderTreeFrameType.Component
     // --------------------------------------------------------------------------------
 
-    [FieldOffset(6)] internal byte ComponentRenderModeField;
+    [FieldOffset(6)] internal ComponentFrameFlags ComponentFrameFlagsField;
     [FieldOffset(8)] internal int ComponentSubtreeLengthField;
     [FieldOffset(12)] internal int ComponentIdField;
     [FieldOffset(16)]
@@ -147,9 +147,9 @@ public struct RenderTreeFrame
 
     /// <summary>
     /// If the <see cref="FrameType"/> property equals <see cref="RenderTreeFrameType.Component"/>
-    /// gets the render mode for the component. The value is zero if no render mode is specified.
+    /// gets the <see cref="ComponentFrameFlags"/> for the component frame.
     /// </summary>
-    public byte ComponentRenderMode => ComponentRenderModeField;
+    public ComponentFrameFlags ComponentFrameFlags => ComponentFrameFlagsField;
 
     /// <summary>
     /// If the <see cref="FrameType"/> property equals <see cref="RenderTreeFrameType.Component"/>
@@ -256,6 +256,31 @@ public struct RenderTreeFrame
     /// gets the content of the markup frame. Otherwise, the value is undefined.
     /// </summary>
     public string MarkupContent => MarkupContentField;
+
+    // --------------------------------------------------------------------------------
+    // RenderTreeFrameType.ComponentRenderMode
+    // --------------------------------------------------------------------------------
+
+    [FieldOffset(16)] internal IComponentRenderMode ComponentRenderModeField;
+
+    /// <summary>
+    /// If the <see cref="FrameType"/> property equals <see cref="RenderTreeFrameType.ComponentRenderMode"/>,
+    /// gets the content of the markup frame. Otherwise, the value is undefined.
+    /// </summary>
+    public IComponentRenderMode ComponentRenderMode
+    {
+        get
+        {
+            // Normally we don't check the frame type matches, and leave it to the caller to be responsible for only evaluating the correct properties.
+            // However the name "ComponentRenderMode" sounds so much like it would be a field on Component frames that we'll explicitly check to avoid mistakes.
+            if (FrameType != RenderTreeFrameType.ComponentRenderMode)
+            {
+                throw new InvalidOperationException($"The {nameof(ComponentRenderMode)} field only exists on frames of type {nameof(RenderTreeFrame.ComponentRenderMode)}.");
+            }
+
+            return ComponentRenderModeField;
+        }
+    }
 
     // Element constructor
     private RenderTreeFrame(int sequence, int elementSubtreeLength, string elementName, object elementKey)

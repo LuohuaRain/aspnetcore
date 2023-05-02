@@ -34,20 +34,18 @@ Microsoft.AspNetCore.Components.Web.HtmlRendering.HtmlRootComponent.HtmlRootComp
 Microsoft.AspNetCore.Components.Web.HtmlRendering.HtmlRootComponent.QuiescenceTask.get -> System.Threading.Tasks.Task!
 Microsoft.AspNetCore.Components.Web.HtmlRendering.HtmlRootComponent.ToHtmlString() -> string!
 Microsoft.AspNetCore.Components.Web.HtmlRendering.HtmlRootComponent.WriteHtmlTo(System.IO.TextWriter! output) -> void
-Microsoft.AspNetCore.Components.Web.RenderMode.Server
-Microsoft.AspNetCore.Components.Web.RenderMode.Server.Server() -> void
-Microsoft.AspNetCore.Components.Web.RenderMode.ServerPrerendered
-Microsoft.AspNetCore.Components.Web.RenderMode.ServerPrerendered.ServerPrerendered() -> void
-Microsoft.AspNetCore.Components.Web.RenderMode.WebAssembly
-Microsoft.AspNetCore.Components.Web.RenderMode.WebAssembly.WebAssembly() -> void
-Microsoft.AspNetCore.Components.Web.RenderMode.WebAssemblyPrerendered
-Microsoft.AspNetCore.Components.Web.RenderMode.WebAssemblyPrerendered.WebAssemblyPrerendered() -> void
+Microsoft.AspNetCore.Components.Web.RenderMode
+Microsoft.AspNetCore.Components.Web.RenderModes.Server
+Microsoft.AspNetCore.Components.Web.RenderModes.Server.Prerender.get -> bool
+Microsoft.AspNetCore.Components.Web.RenderModes.Server.Server() -> void
+Microsoft.AspNetCore.Components.Web.RenderModes.Server.Server(bool prerender) -> void
+Microsoft.AspNetCore.Components.Web.RenderModes.WebAssembly
+Microsoft.AspNetCore.Components.Web.RenderModes.WebAssembly.Prerender.get -> bool
+Microsoft.AspNetCore.Components.Web.RenderModes.WebAssembly.WebAssembly() -> void
+Microsoft.AspNetCore.Components.Web.RenderModes.WebAssembly.WebAssembly(bool prerender) -> void
 override Microsoft.AspNetCore.Components.HtmlRendering.Infrastructure.StaticHtmlRenderer.Dispatcher.get -> Microsoft.AspNetCore.Components.Dispatcher!
 override Microsoft.AspNetCore.Components.HtmlRendering.Infrastructure.StaticHtmlRenderer.HandleException(System.Exception! exception) -> void
 override Microsoft.AspNetCore.Components.HtmlRendering.Infrastructure.StaticHtmlRenderer.UpdateDisplayAsync(in Microsoft.AspNetCore.Components.RenderTree.RenderBatch renderBatch) -> System.Threading.Tasks.Task!
-static Microsoft.AspNetCore.Components.Web.RenderMode.Server.Instance.get -> Microsoft.AspNetCore.Components.Web.RenderMode.Server!
-static Microsoft.AspNetCore.Components.Web.RenderMode.ServerPrerendered.Instance.get -> Microsoft.AspNetCore.Components.Web.RenderMode.ServerPrerendered!
-static Microsoft.AspNetCore.Components.Web.RenderMode.WebAssembly.AsNumericValue() -> byte
-static Microsoft.AspNetCore.Components.Web.RenderMode.WebAssembly.Instance.get -> Microsoft.AspNetCore.Components.Web.RenderMode.WebAssembly!
-static Microsoft.AspNetCore.Components.Web.RenderMode.WebAssemblyPrerendered.Instance.get -> Microsoft.AspNetCore.Components.Web.RenderMode.WebAssemblyPrerendered!
+static Microsoft.AspNetCore.Components.Web.RenderMode.Server.get -> Microsoft.AspNetCore.Components.IComponentRenderMode!
+static Microsoft.AspNetCore.Components.Web.RenderMode.WebAssembly.get -> Microsoft.AspNetCore.Components.IComponentRenderMode!
 virtual Microsoft.AspNetCore.Components.HtmlRendering.Infrastructure.StaticHtmlRenderer.WriteComponentHtml(int componentId, System.IO.TextWriter! output) -> void

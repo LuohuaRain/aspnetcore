@@ -4,14 +4,8 @@
 namespace Microsoft.AspNetCore.Components;
 
 /// <summary>
-/// Describes the render mode for a component.
+/// Represents a render mode for a component.
 /// </summary>
 public interface IComponentRenderMode
 {
-    /// <summary>
-    /// Gets a numeric representation of the render mode. This is a framework implementation detail
-    /// and should not normally be used in application code.
-    /// </summary>
-    /// <returns>A numeric representation of the render mode.</returns>
-    public static abstract byte AsNumericValue();
 }

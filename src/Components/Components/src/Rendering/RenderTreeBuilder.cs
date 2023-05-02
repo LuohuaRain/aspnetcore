@@ -411,7 +411,10 @@ public sealed class RenderTreeBuilder : IDisposable
         }
     }
 
-    public void AddAttribute<TRenderMode>(int sequence, string name, TRenderMode renderMode) where TRenderMode: IComponentRenderMode
+    /// <summary>
+    /// TEMPORARY API until Razor compiler is updated. This will be removed before .NET 8 ships.
+    /// </summary>
+    public void AddAttribute(int sequence, string name, IComponentRenderMode renderMode)
     {
         // This is a TEMPORARY API until the Razor compiler is updated to implement the @rendermode directive attribute.
         // In preview releases until that is implemented, developers may use the syntax <SomeComponent rendermode="@RenderMode.WebAssembly.Instance" />
@@ -421,8 +424,8 @@ public sealed class RenderTreeBuilder : IDisposable
         }
 
         // When the Razor compiler is updated, <SomeComponent @rendermode="@RenderMode.WebAssembly" />  would compile directly as a call
-        // to SetComponentRenderMode<RenderMode.WebAssembly>
-        SetComponentRenderMode<TRenderMode>();
+        // to AddComponentRenderMode(RenderMode.WebAssembly), which must appear after all attributes
+        AddComponentRenderMode(sequence, renderMode);
     }
 
     /// <summary>
@@ -678,11 +681,19 @@ public sealed class RenderTreeBuilder : IDisposable
     }
 
     /// <summary>
-    /// Sets the render mode on the enclosing component frame.
+    /// Adds a frame indicating the render mode on the enclosing component frame.
     /// </summary>
-    /// <typeparam name="TRenderMode">The component render mode.</typeparam>
-    public void SetComponentRenderMode<TRenderMode>() where TRenderMode : IComponentRenderMode
+    /// <param name="sequence">An integer that represents the position of the instruction in the source code.</param>
+    /// <param name="renderMode">The <see cref="IComponentRenderMode"/>.</param>
+    public void AddComponentRenderMode(int sequence, IComponentRenderMode renderMode)
     {
+        // Note that a ComponentRenderMode frame is technically a child of the Component frame to which it applies,
+        // hence the terminology of "adding" it rather than "setting" it. For performance reasons, the diffing system
+        // will only look for ComponentRenderMode frames:
+        // [a] when the HasCallerSpecifiedRenderMode flag is set on the Component frame
+        // [b] up until the first child that is *not* a ComponentRenderMode frame or any other header frame type
+        //     that we may define in the future
+
         var parentFrameIndex = GetCurrentParentFrameIndex();
         if (!parentFrameIndex.HasValue)
         {
@@ -696,7 +707,10 @@ public sealed class RenderTreeBuilder : IDisposable
             throw new InvalidOperationException($"The enclosing frame is not of the required type '{nameof(RenderTreeFrameType.Component)}'.");
         }
 
-        parentFrame.ComponentRenderModeField = TRenderMode.AsNumericValue();
+        parentFrame.ComponentFrameFlagsField |= ComponentFrameFlags.HasCallerSpecifiedRenderMode;
+
+        _entries.AppendComponentRenderMode(sequence, renderMode);
+        _lastNonAttributeFrameType = RenderTreeFrameType.ComponentRenderMode;
     }
 
     /// <summary>

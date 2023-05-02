@@ -1,18 +1,31 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
+// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-namespace Microsoft.AspNetCore.Components.Web.RenderMode;
+namespace Microsoft.AspNetCore.Components.Web.RenderModes;
 
 /// <summary>
-/// Represents a render mode in which components run on the server via a WebSocket connection.
+/// A <see cref="IComponentRenderMode"/> indicating that the component should be rendered interactively on the server using Blazor Server hosting.
 /// </summary>
 public class Server : IComponentRenderMode
 {
-    static byte IComponentRenderMode.AsNumericValue() => RenderModes.Server;
+    /// <summary>
+    /// Constructs an instance of <see cref="Server"/>.
+    /// </summary>
+    public Server() : this(true)
+    {
+    }
 
     /// <summary>
-    /// Gets an instance of the <see cref="Server"/> type.
-    /// Caution: This is a temporary API for .NET 8 preview releases until the Razor compiler is updated to support the @rendermode directive attribute.
+    /// Constructs an instance of <see cref="Server"/>
     /// </summary>
-    public static Server Instance { get; } = new();
+    /// <param name="prerender">A flag indicating whether the component should first prerender on the server. The default value is true.</param>
+    public Server(bool prerender)
+    {
+        Prerender = prerender;
+    }
+
+    /// <summary>
+    /// A flag indicating whether the component should first prerender on the server. The default value is true.
+    /// </summary>
+    public bool Prerender { get; }
 }
