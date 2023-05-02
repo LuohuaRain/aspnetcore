@@ -6,10 +6,8 @@ namespace Microsoft.AspNetCore.Components.Web.RenderModes;
 /// <summary>
 /// A <see cref="IComponentRenderMode"/> indicating that the component should be rendered interactively on the server using Blazor Server hosting.
 /// </summary>
-public class Server : IComponentRenderMode, IDefaultComponentRenderMode
+public class Server : IComponentRenderMode
 {
-    static IComponentRenderMode? IDefaultComponentRenderMode.RenderMode => RenderMode.Server;
-
     /// <summary>
     /// Constructs an instance of <see cref="Server"/>.
     /// </summary>

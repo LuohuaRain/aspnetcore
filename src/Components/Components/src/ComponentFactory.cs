@@ -50,7 +50,24 @@ internal sealed class ComponentFactory
     }
 
     private static IComponentRenderMode? GetDefaultRenderMode(Type componentType)
-        => componentType.GetCustomAttribute<DefaultRenderModeAttribute>(inherit: true)?.RenderMode;
+    {
+        // We need to know the default render mode *before* instantiating the component, as we might not be instantiating it at all,
+        // depending on the render mode. So IDefaultRenderMode has a static method. Unfortunately the only way to evaluate this from
+        // a Type value is through reflection. The following is compatible with trimming and NativeAOT, and the result is cached so
+        // the once-per-component-type execution cost does not have much effect.
+        // If this was a problem we could require components to declare a generically-typed attribute,
+        // e.g., DefaultRenderModeAttribute<T> : DefaultRenderModeAttribute where T: IDefaultRenderMode
+        // and then its constructor could read T.DefaultRenderMode and store it on a property. However, that greatly complicates
+        // the Razor compiler output and complicates things for anyone trying to implement a component in a .cs file.
+        if (componentType.IsAssignableTo(typeof(IDefaultRenderMode)))
+        {
+            var methodInfo = typeof(DefaultRenderModeEvaluator<>).MakeGenericType(componentType)
+                .GetMethod("GetComponentRenderMode", BindingFlags.Static | BindingFlags.Public)!;
+            return (IComponentRenderMode?)methodInfo.Invoke(null, null);
+        }
+
+        return null;
+    }
 
     private static Action<IServiceProvider, IComponent> CreateInitializer([DynamicallyAccessedMembers(Component)] Type type)
     {
@@ -91,6 +108,12 @@ internal sealed class ComponentFactory
                 setter.SetValue(component, serviceInstance);
             }
         }
+    }
+
+    private class DefaultRenderModeEvaluator<T> where T : IDefaultRenderMode
+    {
+        public static IComponentRenderMode? GetComponentRenderMode()
+            => T.DefaultRenderMode;
     }
 
     // Tracks information about a specific component type that ComponentFactory uses
