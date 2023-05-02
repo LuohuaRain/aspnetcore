@@ -475,16 +475,17 @@ public abstract partial class Renderer : IDisposable, IAsyncDisposable
             : EventArgsTypeCache.GetEventArgsType(methodInfo);
     }
 
-    internal void InstantiateChildComponentOnFrame(ref RenderTreeFrame frame, int parentComponentId)
+    internal ComponentState InstantiateChildComponentOnFrame(RenderTreeFrame[] frames, int frameIndex, int parentComponentId)
     {
+        ref var frame = ref frames[frameIndex];
         if (frame.FrameTypeField != RenderTreeFrameType.Component)
         {
-            throw new ArgumentException($"The frame's {nameof(RenderTreeFrame.FrameType)} property must equal {RenderTreeFrameType.Component}", nameof(frame));
+            throw new ArgumentException($"The frame's {nameof(RenderTreeFrame.FrameType)} property must equal {RenderTreeFrameType.Component}", nameof(frameIndex));
         }
 
         if (frame.ComponentStateField != null)
         {
-            throw new ArgumentException($"The frame already has a non-null component instance", nameof(frame));
+            throw new ArgumentException($"The frame already has a non-null component instance", nameof(frameIndex));
         }
 
         // Something like here would be an ideal moment to be looking up the default rendermode for a given
@@ -510,6 +511,8 @@ public abstract partial class Renderer : IDisposable, IAsyncDisposable
         var newComponentState = AttachAndInitComponent(newComponent, parentComponentId);
         frame.ComponentStateField = newComponentState;
         frame.ComponentIdField = newComponentState.ComponentId;
+
+        return newComponentState;
     }
 
     internal void AddToPendingTasksWithErrorHandling(Task task, ComponentState? owningComponentState)
