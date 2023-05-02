@@ -25,7 +25,7 @@ internal sealed class ComponentFactory
 
     public static void ClearCache() => _cachedInitializers.Clear();
 
-    public IComponent InstantiateComponent(IServiceProvider serviceProvider, [DynamicallyAccessedMembers(Component)] Type componentType)
+    public IComponent InstantiateComponent(IServiceProvider serviceProvider, [DynamicallyAccessedMembers(Component)] Type componentType, IComponentRenderMode? callerSpecifiedRenderMode)
     {
         var component = _componentActivator.CreateInstance(componentType);
         if (component is null)

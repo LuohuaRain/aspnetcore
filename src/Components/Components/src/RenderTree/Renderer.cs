@@ -162,9 +162,10 @@ public abstract partial class Renderer : IDisposable, IAsyncDisposable
     /// <param name="componentType">The type of the component to instantiate.</param>
     /// <returns>The component instance.</returns>
     protected IComponent InstantiateComponent([DynamicallyAccessedMembers(Component)] Type componentType)
-    {
-        return _componentFactory.InstantiateComponent(_serviceProvider, componentType);
-    }
+        => InstantiateComponent(componentType, null);
+
+    private IComponent InstantiateComponent([DynamicallyAccessedMembers(Component)] Type componentType, IComponentRenderMode? callerSpecifiedRenderMode)
+        => _componentFactory.InstantiateComponent(_serviceProvider, componentType, callerSpecifiedRenderMode);
 
     /// <summary>
     /// Associates the <see cref="IComponent"/> with the <see cref="Renderer"/>, assigning
@@ -488,6 +489,10 @@ public abstract partial class Renderer : IDisposable, IAsyncDisposable
             throw new ArgumentException($"The frame already has a non-null component instance", nameof(frameIndex));
         }
 
+        var callerSpecifiedRenderMode = frame.ComponentFrameFlags.HasFlag(ComponentFrameFlags.HasCallerSpecifiedRenderMode)
+            ? FindCallerSpecifiedRenderMode(frames, frameIndex)
+            : null;
+
         // Something like here would be an ideal moment to be looking up the default rendermode for a given
         // component type, because the ComponentFactory (a nonpublic API) already does a lookup into a cache
         // keyed by component type, so with a bit of refactoring that lookup could be done a bit earlier here
@@ -507,12 +512,36 @@ public abstract partial class Renderer : IDisposable, IAsyncDisposable
         //     does, that would be easy if we could defer knowing about rendermode until later
         // 
 
-        var newComponent = InstantiateComponent(frame.ComponentTypeField);
+        var newComponent = InstantiateComponent(frame.ComponentTypeField, callerSpecifiedRenderMode);
         var newComponentState = AttachAndInitComponent(newComponent, parentComponentId);
         frame.ComponentStateField = newComponentState;
         frame.ComponentIdField = newComponentState.ComponentId;
 
         return newComponentState;
+    }
+
+    private static IComponentRenderMode? FindCallerSpecifiedRenderMode(RenderTreeFrame[] frames, int componentFrameIndex)
+    {
+        // ComponentRenderMode frames are immediate children of Component frames. So, they have to appear after any parameter
+        // attributes (since attributes must always immediately follow Component frames), but before anything that would
+        // represent a different child node, such as text/element or another component. It's OK to do this linear scan
+        // because we consider it uncommon to specify a rendermode, and none of this happens if you don't.
+        var endIndex = componentFrameIndex + frames[componentFrameIndex].ComponentSubtreeLengthField;
+        for (var index = componentFrameIndex + 1; index <= endIndex; index++)
+        {
+            ref var frame = ref frames[index];
+            switch (frame.FrameType)
+            {
+                case RenderTreeFrameType.Attribute:
+                    continue;
+                case RenderTreeFrameType.ComponentRenderMode:
+                    return frame.ComponentRenderMode;
+                default:
+                    break;
+            }
+        }
+
+        return null;
     }
 
     internal void AddToPendingTasksWithErrorHandling(Task task, ComponentState? owningComponentState)
