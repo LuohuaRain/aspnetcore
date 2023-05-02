@@ -411,6 +411,20 @@ public sealed class RenderTreeBuilder : IDisposable
         }
     }
 
+    public void AddAttribute<TRenderMode>(int sequence, string name, TRenderMode renderMode) where TRenderMode: IComponentRenderMode
+    {
+        // This is a TEMPORARY API until the Razor compiler is updated to implement the @rendermode directive attribute.
+        // In preview releases until that is implemented, developers may use the syntax <SomeComponent rendermode="@RenderMode.WebAssembly.Instance" />
+        if (!string.Equals("name", "rendermode", StringComparison.Ordinal))
+        {
+            throw new InvalidOperationException($"{nameof(IComponentRenderMode)} attribute values may only be used on attributes named 'rendermode'.");
+        }
+
+        // When the Razor compiler is updated, <SomeComponent @rendermode="@RenderMode.WebAssembly" />  would compile directly as a call
+        // to SetComponentRenderMode<RenderMode.WebAssembly>
+        SetComponentRenderMode<TRenderMode>();
+    }
+
     /// <summary>
     /// <para>
     /// Appends a frame representing an attribute.
@@ -661,6 +675,28 @@ public sealed class RenderTreeBuilder : IDisposable
 
         _entries.AppendComponentReferenceCapture(sequence, componentReferenceCaptureAction, parentFrameIndexValue);
         _lastNonAttributeFrameType = RenderTreeFrameType.ComponentReferenceCapture;
+    }
+
+    /// <summary>
+    /// Sets the render mode on the enclosing component frame.
+    /// </summary>
+    /// <typeparam name="TRenderMode">The component render mode.</typeparam>
+    public void SetComponentRenderMode<TRenderMode>() where TRenderMode : IComponentRenderMode
+    {
+        var parentFrameIndex = GetCurrentParentFrameIndex();
+        if (!parentFrameIndex.HasValue)
+        {
+            throw new InvalidOperationException("There is no enclosing component frame.");
+        }
+
+        var parentFrameIndexValue = parentFrameIndex.Value;
+        ref var parentFrame = ref _entries.Buffer[parentFrameIndexValue];
+        if (parentFrame.FrameTypeField != RenderTreeFrameType.Component)
+        {
+            throw new InvalidOperationException($"The enclosing frame is not of the required type '{nameof(RenderTreeFrameType.Component)}'.");
+        }
+
+        parentFrame.ComponentRenderModeField = TRenderMode.AsNumericValue();
     }
 
     /// <summary>

@@ -1,0 +1,18 @@
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+
+namespace Microsoft.AspNetCore.Components.Web.RenderMode;
+
+/// <summary>
+/// Represents a render mode in which components run on WebAssembly.
+/// </summary>
+public class WebAssembly : IComponentRenderMode
+{
+    static byte IComponentRenderMode.AsNumericValue() => RenderModes.WebAssembly;
+
+    /// <summary>
+    /// Gets an instance of the <see cref="WebAssembly"/> type.
+    /// Caution: This is a temporary API for .NET 8 preview releases until the Razor compiler is updated to support the @rendermode directive attribute.
+    /// </summary>
+    public static WebAssembly Instance { get; } = new();
+}

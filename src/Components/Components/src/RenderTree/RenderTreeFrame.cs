@@ -136,6 +136,7 @@ public struct RenderTreeFrame
     // RenderTreeFrameType.Component
     // --------------------------------------------------------------------------------
 
+    [FieldOffset(6)] internal byte ComponentRenderModeField;
     [FieldOffset(8)] internal int ComponentSubtreeLengthField;
     [FieldOffset(12)] internal int ComponentIdField;
     [FieldOffset(16)]
@@ -143,6 +144,12 @@ public struct RenderTreeFrame
     internal Type ComponentTypeField;
     [FieldOffset(24)] internal ComponentState ComponentStateField;
     [FieldOffset(32)] internal object ComponentKeyField;
+
+    /// <summary>
+    /// If the <see cref="FrameType"/> property equals <see cref="RenderTreeFrameType.Component"/>
+    /// gets the render mode for the component. The value is zero if no render mode is specified.
+    /// </summary>
+    public byte ComponentRenderMode => ComponentRenderModeField;
 
     /// <summary>
     /// If the <see cref="FrameType"/> property equals <see cref="RenderTreeFrameType.Component"/>

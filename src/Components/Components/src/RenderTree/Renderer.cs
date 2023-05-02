@@ -487,6 +487,25 @@ public abstract partial class Renderer : IDisposable, IAsyncDisposable
             throw new ArgumentException($"The frame already has a non-null component instance", nameof(frame));
         }
 
+        // Something like here would be an ideal moment to be looking up the default rendermode for a given
+        // component type, because the ComponentFactory (a nonpublic API) already does a lookup into a cache
+        // keyed by component type, so with a bit of refactoring that lookup could be done a bit earlier here
+        // and then we'd get te default rendermode info for free.
+        // However it's trickier if we want the rendermode to be specified on an independent RenderTreeFrame
+        // because:
+        // (1) current conventions dictate that Attribute frames are always the first thing following the
+        //     Component frame. The set of attributes is defined as the contiguous sequence of attribute frames
+        //     following the component frame. If we tried to put in something else before them, the walking logic
+        //     would have to know about all the possible pre-attribute frames so it could step through them. And
+        //     even then we might have relied on a convention that the frame at "attribute 0 minus one" is the
+        //     component frame (in fact ParameterView does exactly that - it has a concept of ownerIndex, which
+        //     defines where to start looking for attributes).
+        //     - I've found several other assumptions of the same form, so it's probably too disruptive on
+        //       assumptions elsewhere to change that
+        // (2) if we wanted the rendermode frame to appear *after* attributes, like ComponentReferenceCapture
+        //     does, that would be easy if we could defer knowing about rendermode until later
+        // 
+
         var newComponent = InstantiateComponent(frame.ComponentTypeField);
         var newComponentState = AttachAndInitComponent(newComponent, parentComponentId);
         frame.ComponentStateField = newComponentState;

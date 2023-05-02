@@ -8,6 +8,8 @@ Microsoft.AspNetCore.Components.CascadingModelBinder.IsFixed.set -> void
 Microsoft.AspNetCore.Components.CascadingModelBinder.Name.get -> string!
 Microsoft.AspNetCore.Components.CascadingModelBinder.Name.set -> void
 Microsoft.AspNetCore.Components.ComponentBase.DispatchExceptionAsync(System.Exception! exception) -> System.Threading.Tasks.Task!
+Microsoft.AspNetCore.Components.IComponentRenderMode
+Microsoft.AspNetCore.Components.IComponentRenderMode.AsNumericValue() -> byte
 Microsoft.AspNetCore.Components.Infrastructure.ComponentStatePersistenceManager.PersistStateAsync(Microsoft.AspNetCore.Components.IPersistentComponentStateStore! store, Microsoft.AspNetCore.Components.Dispatcher! dispatcher) -> System.Threading.Tasks.Task!
 Microsoft.AspNetCore.Components.ModelBindingContext
 Microsoft.AspNetCore.Components.ModelBindingContext.BindingContextId.get -> string!
@@ -15,7 +17,9 @@ Microsoft.AspNetCore.Components.ModelBindingContext.Name.get -> string!
 Microsoft.AspNetCore.Components.RenderHandle.DispatchExceptionAsync(System.Exception! exception) -> System.Threading.Tasks.Task!
 *REMOVED*Microsoft.AspNetCore.Components.NavigationManager.ToAbsoluteUri(string! relativeUri) -> System.Uri!
 Microsoft.AspNetCore.Components.NavigationManager.ToAbsoluteUri(string? relativeUri) -> System.Uri!
+Microsoft.AspNetCore.Components.Rendering.RenderTreeBuilder.SetComponentRenderMode<TRenderMode>() -> void
 Microsoft.AspNetCore.Components.Rendering.RenderTreeBuilder.SetEventHandlerName(string! eventHandlerName) -> void
+Microsoft.AspNetCore.Components.RenderTree.RenderTreeFrame.ComponentRenderMode.get -> byte
 Microsoft.AspNetCore.Components.Routing.IScrollToLocationHash
 Microsoft.AspNetCore.Components.Routing.IScrollToLocationHash.RefreshScrollPositionForHash(string! locationAbsolute) -> System.Threading.Tasks.Task!
 Microsoft.AspNetCore.Components.Rendering.ComponentState
