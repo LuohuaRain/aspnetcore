@@ -8,6 +8,9 @@ Microsoft.AspNetCore.Components.CascadingModelBinder.IsFixed.set -> void
 Microsoft.AspNetCore.Components.CascadingModelBinder.Name.get -> string!
 Microsoft.AspNetCore.Components.CascadingModelBinder.Name.set -> void
 Microsoft.AspNetCore.Components.ComponentBase.DispatchExceptionAsync(System.Exception! exception) -> System.Threading.Tasks.Task!
+Microsoft.AspNetCore.Components.DefaultRenderModeAttribute
+Microsoft.AspNetCore.Components.DefaultRenderModeAttribute.DefaultRenderModeAttribute(Microsoft.AspNetCore.Components.IComponentRenderMode? renderMode) -> void
+Microsoft.AspNetCore.Components.DefaultRenderModeAttribute.RenderMode.get -> Microsoft.AspNetCore.Components.IComponentRenderMode?
 Microsoft.AspNetCore.Components.IComponentRenderMode
 Microsoft.AspNetCore.Components.IComponentRenderMode.AsNumericValue() -> byte
 Microsoft.AspNetCore.Components.Infrastructure.ComponentStatePersistenceManager.PersistStateAsync(Microsoft.AspNetCore.Components.IPersistentComponentStateStore! store, Microsoft.AspNetCore.Components.Dispatcher! dispatcher) -> System.Threading.Tasks.Task!

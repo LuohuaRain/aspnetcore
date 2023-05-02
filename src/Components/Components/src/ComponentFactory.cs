@@ -14,7 +14,7 @@ internal sealed class ComponentFactory
     private const BindingFlags _injectablePropertyBindingFlags
         = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
 
-    private static readonly ConcurrentDictionary<Type, Action<IServiceProvider, IComponent>> _cachedInitializers = new();
+    private static readonly ConcurrentDictionary<Type, ComponentTypeInfoCacheEntry> _cachedComponentTypeInfo = new();
 
     private readonly IComponentActivator _componentActivator;
 
@@ -23,10 +23,21 @@ internal sealed class ComponentFactory
         _componentActivator = componentActivator ?? throw new ArgumentNullException(nameof(componentActivator));
     }
 
-    public static void ClearCache() => _cachedInitializers.Clear();
+    public static void ClearCache() => _cachedComponentTypeInfo.Clear();
 
     public IComponent InstantiateComponent(IServiceProvider serviceProvider, [DynamicallyAccessedMembers(Component)] Type componentType, IComponentRenderMode? callerSpecifiedRenderMode)
     {
+        var componentTypeInfo = _cachedComponentTypeInfo.GetOrAdd(componentType, static ([DynamicallyAccessedMembers(Component)] componentType) =>
+            new ComponentTypeInfoCacheEntry(
+                GetDefaultRenderMode(componentType),
+                CreateInitializer(componentType)));
+
+        var renderMode = callerSpecifiedRenderMode ?? componentTypeInfo.DefaultRenderMode;
+        if (renderMode is not null)
+        {
+            Console.WriteLine($"For component of type {componentType}, would use rendermode {renderMode}");
+        }
+
         var component = _componentActivator.CreateInstance(componentType);
         if (component is null)
         {
@@ -34,24 +45,12 @@ internal sealed class ComponentFactory
             throw new InvalidOperationException($"The component activator returned a null value for a component of type {componentType.FullName}.");
         }
 
-        PerformPropertyInjection(serviceProvider, component);
+        componentTypeInfo.Initializer(serviceProvider, component);
         return component;
     }
 
-    private static void PerformPropertyInjection(IServiceProvider serviceProvider, IComponent instance)
-    {
-        // This is thread-safe because _cachedInitializers is a ConcurrentDictionary.
-        // We might generate the initializer more than once for a given type, but would
-        // still produce the correct result.
-        var instanceType = instance.GetType();
-        if (!_cachedInitializers.TryGetValue(instanceType, out var initializer))
-        {
-            initializer = CreateInitializer(instanceType);
-            _cachedInitializers.TryAdd(instanceType, initializer);
-        }
-
-        initializer(serviceProvider, instance);
-    }
+    private static IComponentRenderMode? GetDefaultRenderMode(Type componentType)
+        => componentType.GetCustomAttribute<DefaultRenderModeAttribute>(inherit: true)?.RenderMode;
 
     private static Action<IServiceProvider, IComponent> CreateInitializer([DynamicallyAccessedMembers(Component)] Type type)
     {
@@ -93,4 +92,9 @@ internal sealed class ComponentFactory
             }
         }
     }
+
+    // Tracks information about a specific component type that ComponentFactory uses
+    private record class ComponentTypeInfoCacheEntry(
+        IComponentRenderMode? DefaultRenderMode,
+        Action<IServiceProvider, IComponent> Initializer);
 }
