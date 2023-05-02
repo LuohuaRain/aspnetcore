@@ -59,7 +59,7 @@ internal sealed class ComponentFactory
         // e.g., DefaultRenderModeAttribute<T> : DefaultRenderModeAttribute where T: IDefaultRenderMode
         // and then its constructor could read T.DefaultRenderMode and store it on a property. However, that greatly complicates
         // the Razor compiler output and complicates things for anyone trying to implement a component in a .cs file.
-        if (componentType.IsAssignableTo(typeof(IDefaultRenderMode)))
+        if (componentType.IsAssignableTo(typeof(IDefaultComponentRenderMode)))
         {
             var methodInfo = typeof(DefaultRenderModeEvaluator<>).MakeGenericType(componentType)
                 .GetMethod("GetComponentRenderMode", BindingFlags.Static | BindingFlags.Public)!;
@@ -110,10 +110,10 @@ internal sealed class ComponentFactory
         }
     }
 
-    private class DefaultRenderModeEvaluator<T> where T : IDefaultRenderMode
+    private class DefaultRenderModeEvaluator<T> where T : IDefaultComponentRenderMode
     {
         public static IComponentRenderMode? GetComponentRenderMode()
-            => T.DefaultRenderMode;
+            => T.DefaultComponentRenderMode;
     }
 
     // Tracks information about a specific component type that ComponentFactory uses

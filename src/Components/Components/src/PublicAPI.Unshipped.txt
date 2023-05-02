@@ -10,8 +10,8 @@ Microsoft.AspNetCore.Components.CascadingModelBinder.Name.set -> void
 Microsoft.AspNetCore.Components.ComponentBase.DispatchExceptionAsync(System.Exception! exception) -> System.Threading.Tasks.Task!
 Microsoft.AspNetCore.Components.IComponentRenderMode
 Microsoft.AspNetCore.Components.IComponentRenderMode.AsNumericValue() -> byte
-Microsoft.AspNetCore.Components.IDefaultRenderMode
-Microsoft.AspNetCore.Components.IDefaultRenderMode.DefaultRenderMode.get -> Microsoft.AspNetCore.Components.IComponentRenderMode?
+Microsoft.AspNetCore.Components.IDefaultComponentRenderMode
+Microsoft.AspNetCore.Components.IDefaultComponentRenderMode.DefaultComponentRenderMode.get -> Microsoft.AspNetCore.Components.IComponentRenderMode?
 Microsoft.AspNetCore.Components.Infrastructure.ComponentStatePersistenceManager.PersistStateAsync(Microsoft.AspNetCore.Components.IPersistentComponentStateStore! store, Microsoft.AspNetCore.Components.Dispatcher! dispatcher) -> System.Threading.Tasks.Task!
 Microsoft.AspNetCore.Components.ModelBindingContext
 Microsoft.AspNetCore.Components.ModelBindingContext.BindingContextId.get -> string!
