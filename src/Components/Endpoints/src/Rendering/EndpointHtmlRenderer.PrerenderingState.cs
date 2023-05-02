@@ -3,7 +3,7 @@
 
 using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Components.Infrastructure;
-using Microsoft.AspNetCore.Components.Web.RenderModes;
+using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Http;
@@ -59,9 +59,9 @@ internal partial class EndpointHtmlRenderer
     internal static void UpdateSaveStateRenderMode(HttpContext httpContext, IComponentRenderMode mode)
     {
         // TODO: This will all have to change when we support multiple render modes in the same response
-        if (mode is Server { Prerender: true } || mode is WebAssembly { Prerender: true })
+        if (mode is ServerRenderMode { Prerender: true } || mode is WebAssemblyRenderMode { Prerender: true })
         {
-            var currentInvocation = mode is WebAssembly
+            var currentInvocation = mode is ServerRenderMode
                 ? InvokedRenderModes.Mode.Server
                 : InvokedRenderModes.Mode.WebAssembly;
 

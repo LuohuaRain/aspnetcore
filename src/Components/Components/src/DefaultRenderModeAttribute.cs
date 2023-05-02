@@ -12,5 +12,5 @@ public abstract class DefaultRenderModeAttribute : Attribute
     /// <summary>
     /// Gets the default rendering mode for a component.
     /// </summary>
-    public abstract IComponentRenderMode? RenderMode { get; }
+    public abstract IComponentRenderMode? DefaultRenderMode { get; }
 }

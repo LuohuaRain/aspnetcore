@@ -50,7 +50,7 @@ internal sealed class ComponentFactory
     }
 
     private static IComponentRenderMode? GetDefaultRenderMode(Type componentType)
-        => componentType.GetCustomAttribute<DefaultRenderModeAttribute>()?.RenderMode;
+        => componentType.GetCustomAttribute<DefaultRenderModeAttribute>()?.DefaultRenderMode;
 
     private static Action<IServiceProvider, IComponent> CreateInitializer([DynamicallyAccessedMembers(Component)] Type type)
     {

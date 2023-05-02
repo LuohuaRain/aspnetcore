@@ -12,11 +12,11 @@ public static class RenderMode
     /// Gets an <see cref="IComponentRenderMode"/> that represents rendering interactively on the server via Blazor Server hosting
     /// with server-side prerendering.
     /// </summary>
-    public static IComponentRenderMode Server { get; } = new RenderModes.Server();
+    public static ServerRenderMode Server { get; } = new ServerRenderMode();
 
     /// <summary>
     /// Gets an <see cref="IComponentRenderMode"/> that represents rendering interactively on the client via Blazor WebAssembly hosting
     /// with server-side prerendering.
     /// </summary>
-    public static IComponentRenderMode WebAssembly { get; } = new RenderModes.WebAssembly();
+    public static WebAssemblyRenderMode WebAssembly { get; } = new WebAssemblyRenderMode();
 }

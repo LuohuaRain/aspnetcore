@@ -2,8 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Text.Encodings.Web;
+using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.Web.HtmlRendering;
-using Microsoft.AspNetCore.Components.Web.RenderModes;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
@@ -47,10 +47,10 @@ internal partial class EndpointHtmlRenderer
         {
             var result = prerenderMode switch
             {
-                Server { Prerender: true } => await PrerenderedServerComponentAsync(httpContext, GetOrCreateInvocationId(httpContext), componentType, parameters),
-                Server => NonPrerenderedServerComponent(httpContext, GetOrCreateInvocationId(httpContext), componentType, parameters),
-                WebAssembly { Prerender: true } => await PrerenderedWebAssemblyComponentAsync(componentType, parameters),
-                WebAssembly => NonPrerenderedWebAssemblyComponent(componentType, parameters),
+                ServerRenderMode { Prerender: true } => await PrerenderedServerComponentAsync(httpContext, GetOrCreateInvocationId(httpContext), componentType, parameters),
+                ServerRenderMode => NonPrerenderedServerComponent(httpContext, GetOrCreateInvocationId(httpContext), componentType, parameters),
+                WebAssemblyRenderMode { Prerender: true } => await PrerenderedWebAssemblyComponentAsync(componentType, parameters),
+                WebAssemblyRenderMode => NonPrerenderedWebAssemblyComponent(componentType, parameters),
                 null => await StaticComponentAsync(componentType, parameters),
                 _ => throw new ArgumentException(Resources.FormatUnsupportedRenderMode(prerenderMode), nameof(prerenderMode)),
             };

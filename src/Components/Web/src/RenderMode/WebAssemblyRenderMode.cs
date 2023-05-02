@@ -1,25 +1,25 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-namespace Microsoft.AspNetCore.Components.Web.RenderModes;
+namespace Microsoft.AspNetCore.Components.Web;
 
 /// <summary>
-/// A <see cref="IComponentRenderMode"/> indicating that the component should be rendered interactively on the server using Blazor Server hosting.
+/// A <see cref="IComponentRenderMode"/> indicating that the component should be rendered on the client using WebAssembly.
 /// </summary>
-public class Server : IComponentRenderMode
+public class WebAssemblyRenderMode : IComponentRenderMode
 {
     /// <summary>
-    /// Constructs an instance of <see cref="Server"/>.
+    /// Constructs an instance of <see cref="WebAssemblyRenderMode"/>.
     /// </summary>
-    public Server() : this(true)
+    public WebAssemblyRenderMode() : this(true)
     {
     }
 
     /// <summary>
-    /// Constructs an instance of <see cref="Server"/>
+    /// Constructs an instance of <see cref="WebAssemblyRenderMode"/>
     /// </summary>
     /// <param name="prerender">A flag indicating whether the component should first prerender on the server. The default value is true.</param>
-    public Server(bool prerender)
+    public WebAssemblyRenderMode(bool prerender)
     {
         Prerender = prerender;
     }

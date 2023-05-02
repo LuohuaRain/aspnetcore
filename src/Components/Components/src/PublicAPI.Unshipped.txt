@@ -1,5 +1,5 @@
 #nullable enable
-abstract Microsoft.AspNetCore.Components.DefaultRenderModeAttribute.RenderMode.get -> Microsoft.AspNetCore.Components.IComponentRenderMode?
+abstract Microsoft.AspNetCore.Components.DefaultRenderModeAttribute.DefaultRenderMode.get -> Microsoft.AspNetCore.Components.IComponentRenderMode?
 Microsoft.AspNetCore.Components.CascadingModelBinder
 Microsoft.AspNetCore.Components.CascadingModelBinder.CascadingModelBinder() -> void
 Microsoft.AspNetCore.Components.CascadingModelBinder.ChildContent.get -> Microsoft.AspNetCore.Components.RenderFragment<Microsoft.AspNetCore.Components.ModelBindingContext!>!
