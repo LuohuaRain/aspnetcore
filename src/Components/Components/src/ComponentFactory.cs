@@ -30,7 +30,7 @@ internal sealed class ComponentFactory
         var componentTypeInfo = _cachedComponentTypeInfo.GetOrAdd(componentType, static ([DynamicallyAccessedMembers(Component)] componentType) =>
             new ComponentTypeInfoCacheEntry(
                 GetDefaultRenderMode(componentType),
-                CreateInitializer(componentType)));
+                CreatePropertyInjector(componentType)));
 
         var renderMode = callerSpecifiedRenderMode ?? componentTypeInfo.DefaultRenderMode;
         if (renderMode is not null)
@@ -45,14 +45,14 @@ internal sealed class ComponentFactory
             throw new InvalidOperationException($"The component activator returned a null value for a component of type {componentType.FullName}.");
         }
 
-        componentTypeInfo.Initializer(serviceProvider, component);
+        componentTypeInfo.PerformPropertyInjection(serviceProvider, component);
         return component;
     }
 
     private static IComponentRenderMode? GetDefaultRenderMode(Type componentType)
         => componentType.GetCustomAttribute<DefaultRenderModeAttribute>()?.DefaultRenderMode;
 
-    private static Action<IServiceProvider, IComponent> CreateInitializer([DynamicallyAccessedMembers(Component)] Type type)
+    private static Action<IServiceProvider, IComponent> CreatePropertyInjector([DynamicallyAccessedMembers(Component)] Type type)
     {
         // Do all the reflection up front
         List<(string name, Type propertyType, PropertySetter setter)>? injectables = null;
@@ -96,5 +96,5 @@ internal sealed class ComponentFactory
     // Tracks information about a specific component type that ComponentFactory uses
     private record class ComponentTypeInfoCacheEntry(
         IComponentRenderMode? DefaultRenderMode,
-        Action<IServiceProvider, IComponent> Initializer);
+        Action<IServiceProvider, IComponent> PerformPropertyInjection);
 }
