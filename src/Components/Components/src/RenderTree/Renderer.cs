@@ -86,7 +86,7 @@ public abstract partial class Renderer : IDisposable, IAsyncDisposable
         // has always taken ILoggerFactory so to avoid the per-instance string allocation of the logger name we just pass the
         // logger name in here as a string literal.
         _logger = loggerFactory.CreateLogger("Microsoft.AspNetCore.Components.RenderTree.Renderer");
-        _componentFactory = new ComponentFactory(componentActivator);
+        _componentFactory = new ComponentFactory(componentActivator, this);
     }
 
     internal HotReloadManager HotReloadManager { get; set; } = HotReloadManager.Default;
@@ -126,6 +126,20 @@ public abstract partial class Renderer : IDisposable, IAsyncDisposable
     protected ComponentState GetComponentState(int componentId)
         => GetRequiredComponentState(componentId);
 
+    /// <summary>
+    /// Determines whether this renderer supports the specified <see cref="IComponentRenderMode"/>.
+    /// </summary>
+    /// <param name="renderMode">The <see cref="IComponentRenderMode"/>.</param>
+    /// <param name="usesPlaceholder">If true, indicates that the renderer will produce a placeholder instead of the component instance.</param>
+    /// <returns>True if the render mode is supported, otherwise false.</returns>
+    protected internal virtual bool SupportsRenderMode(IComponentRenderMode renderMode, out bool usesPlaceholder)
+    {
+        // Nothing is supported by default. Subclasses must override this to opt into supporting
+        // specific render modes.
+        usesPlaceholder = false;
+        return false;
+    }
+
     private async void RenderRootComponentsOnHotReload()
     {
         // Before re-rendering the root component, also clear any well-known caches in the framework
@@ -162,10 +176,7 @@ public abstract partial class Renderer : IDisposable, IAsyncDisposable
     /// <param name="componentType">The type of the component to instantiate.</param>
     /// <returns>The component instance.</returns>
     protected IComponent InstantiateComponent([DynamicallyAccessedMembers(Component)] Type componentType)
-        => InstantiateComponent(componentType, null);
-
-    private IComponent InstantiateComponent([DynamicallyAccessedMembers(Component)] Type componentType, IComponentRenderMode? callerSpecifiedRenderMode)
-        => _componentFactory.InstantiateComponent(_serviceProvider, componentType, callerSpecifiedRenderMode);
+        => _componentFactory.InstantiateComponent(_serviceProvider, componentType, null);
 
     /// <summary>
     /// Associates the <see cref="IComponent"/> with the <see cref="Renderer"/>, assigning
@@ -493,7 +504,7 @@ public abstract partial class Renderer : IDisposable, IAsyncDisposable
             ? FindCallerSpecifiedRenderMode(frames, frameIndex)
             : null;
 
-        var newComponent = InstantiateComponent(frame.ComponentTypeField, callerSpecifiedRenderMode);
+        var newComponent = _componentFactory.InstantiateComponent(_serviceProvider, frame.ComponentTypeField, callerSpecifiedRenderMode);
         var newComponentState = AttachAndInitComponent(newComponent, parentComponentId);
         frame.ComponentStateField = newComponentState;
         frame.ComponentIdField = newComponentState.ComponentId;

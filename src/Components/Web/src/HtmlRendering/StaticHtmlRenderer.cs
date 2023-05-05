@@ -72,6 +72,26 @@ public partial class StaticHtmlRenderer : Renderer
         return CanceledRenderTask;
     }
 
+    /// <inheritdoc/>
+    protected internal override bool SupportsRenderMode(IComponentRenderMode renderMode, out bool usesPlaceholder)
+    {
+        switch (renderMode)
+        {
+            case ServerRenderMode mode:
+                usesPlaceholder = !mode.Prerender;
+                return true;
+            case WebAssemblyRenderMode mode:
+                usesPlaceholder = !mode.Prerender;
+                return true;
+            case AutoRenderMode mode:
+                usesPlaceholder = !mode.Prerender;
+                return true;
+            default:
+                usesPlaceholder = false;
+                return false;
+        }
+    }
+
     internal new ArrayRange<RenderTreeFrame> GetCurrentRenderTreeFrames(int componentId)
         => base.GetCurrentRenderTreeFrames(componentId);
 }

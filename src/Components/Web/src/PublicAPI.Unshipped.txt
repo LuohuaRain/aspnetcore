@@ -49,6 +49,7 @@ Microsoft.AspNetCore.Components.Web.WebAssemblyRenderMode.WebAssemblyRenderMode(
 Microsoft.AspNetCore.Components.Web.WebAssemblyRenderMode.WebAssemblyRenderMode(bool prerender) -> void
 override Microsoft.AspNetCore.Components.HtmlRendering.Infrastructure.StaticHtmlRenderer.Dispatcher.get -> Microsoft.AspNetCore.Components.Dispatcher!
 override Microsoft.AspNetCore.Components.HtmlRendering.Infrastructure.StaticHtmlRenderer.HandleException(System.Exception! exception) -> void
+override Microsoft.AspNetCore.Components.HtmlRendering.Infrastructure.StaticHtmlRenderer.SupportsRenderMode(Microsoft.AspNetCore.Components.IComponentRenderMode! renderMode, out bool usesPlaceholder) -> bool
 override Microsoft.AspNetCore.Components.HtmlRendering.Infrastructure.StaticHtmlRenderer.UpdateDisplayAsync(in Microsoft.AspNetCore.Components.RenderTree.RenderBatch renderBatch) -> System.Threading.Tasks.Task!
 static Microsoft.AspNetCore.Components.Web.RenderMode.Auto.get -> Microsoft.AspNetCore.Components.Web.AutoRenderMode!
 static Microsoft.AspNetCore.Components.Web.RenderMode.Server.get -> Microsoft.AspNetCore.Components.Web.ServerRenderMode!

@@ -64,5 +64,6 @@ virtual Microsoft.AspNetCore.Components.RenderTree.Renderer.AddPendingTask(Micro
 virtual Microsoft.AspNetCore.Components.RenderTree.Renderer.CreateComponentState(int componentId, Microsoft.AspNetCore.Components.IComponent! component, Microsoft.AspNetCore.Components.Rendering.ComponentState? parentComponentState) -> Microsoft.AspNetCore.Components.Rendering.ComponentState!
 virtual Microsoft.AspNetCore.Components.RenderTree.Renderer.DispatchEventAsync(ulong eventHandlerId, Microsoft.AspNetCore.Components.RenderTree.EventFieldInfo? fieldInfo, System.EventArgs! eventArgs, bool quiesce) -> System.Threading.Tasks.Task!
 virtual Microsoft.AspNetCore.Components.RenderTree.Renderer.ShouldTrackNamedEventHandlers() -> bool
+virtual Microsoft.AspNetCore.Components.RenderTree.Renderer.SupportsRenderMode(Microsoft.AspNetCore.Components.IComponentRenderMode! renderMode, out bool usesPlaceholder) -> bool
 virtual Microsoft.AspNetCore.Components.RenderTree.Renderer.TrackNamedEventId(ulong eventHandlerId, int componentId, string! eventHandlerName) -> void
 ~Microsoft.AspNetCore.Components.RenderTree.RenderTreeFrame.ComponentRenderMode.get -> Microsoft.AspNetCore.Components.IComponentRenderMode
