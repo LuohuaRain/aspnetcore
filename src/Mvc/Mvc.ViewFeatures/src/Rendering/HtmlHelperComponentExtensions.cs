@@ -64,10 +64,9 @@ public static class HtmlHelperComponentExtensions
         return await componentRenderer.PrerenderComponentAsync(httpContext, componentType, MapRenderMode(renderMode), parameterView);
     }
 
-    // This is unfortunate, and we might want to find a better solution. There's an existing public
-    // type Microsoft.AspNetCore.Mvc.Rendering.RenderMode which we now need to use in a lower layer,
-    // M.A.C.Endpoints. Even type-forwarding is not a good solution because we really want to change
-    // the namespace. So this code maps the old enum to the newer one.
+    // The tag helper uses a simple enum to represent render mode, whereas Blazor internally has a richer
+    // object-based way to represent render modes. This converts from tag helper enum values to the
+    // object representation.
     internal static IComponentRenderMode MapRenderMode(RenderMode renderMode) => renderMode switch
     {
         RenderMode.Static => null,
