@@ -32,26 +32,26 @@ internal sealed class ComponentFactory
         _cachedComponentTypeInfo.GetOrAdd(componentType, static ([DynamicallyAccessedMembers(Component)] componentType) =>
             new ComponentTypeInfoCacheEntry(GetDefaultRenderMode(componentType), CreatePropertyInjector(componentType)));
 
-    public IComponent InstantiateComponent(IServiceProvider serviceProvider, [DynamicallyAccessedMembers(Component)] Type componentType, IComponentRenderMode? callerSpecifiedRenderMode)
+    public IComponent InstantiateComponent(IServiceProvider serviceProvider, [DynamicallyAccessedMembers(Component)] Type componentType, IComponentRenderMode? callerSpecifiedRenderMode, out IComponentRenderMode? resolvedRenderMode)
     {
         var componentTypeInfo = GetComponentTypeInfo(componentType);
-        var renderMode = callerSpecifiedRenderMode ?? componentTypeInfo.DefaultRenderMode;
+        resolvedRenderMode = callerSpecifiedRenderMode ?? componentTypeInfo.DefaultRenderMode;
 
         IComponent component;
-        if (renderMode is not null)
+        if (resolvedRenderMode is not null)
         {
             // This is the first point at which we've fully resolved the final render mode, so now we can check
             // how this Renderer wants to handle it
-            if (!_renderer.SupportsRenderMode(renderMode, out var usePlaceholder))
+            if (!_renderer.SupportsRenderMode(resolvedRenderMode, out var usePlaceholder))
             {
-                throw new NotSupportedException($"The current renderer does not support the render mode '{renderMode}'.");
+                throw new NotSupportedException($"The current renderer does not support the render mode '{resolvedRenderMode}'.");
             }
 
             if (usePlaceholder)
             {
                 // We swap out the real component type with RenderModePlaceholder so we can emit instructions
                 // into the document to instantiate the original component type
-                var placeholderComponent = new RenderModePlaceholder(renderMode, componentType);
+                var placeholderComponent = new RenderModePlaceholder(resolvedRenderMode, componentType);
                 componentType = typeof(RenderModePlaceholder);
                 componentTypeInfo = GetComponentTypeInfo(componentType);
                 component = placeholderComponent;

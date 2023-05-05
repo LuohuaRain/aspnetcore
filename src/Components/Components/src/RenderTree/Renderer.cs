@@ -176,7 +176,19 @@ public abstract partial class Renderer : IDisposable, IAsyncDisposable
     /// <param name="componentType">The type of the component to instantiate.</param>
     /// <returns>The component instance.</returns>
     protected IComponent InstantiateComponent([DynamicallyAccessedMembers(Component)] Type componentType)
-        => _componentFactory.InstantiateComponent(_serviceProvider, componentType, null);
+    {
+        var component = _componentFactory.InstantiateComponent(_serviceProvider, componentType, null, out var renderMode);
+
+        if (renderMode is not null)
+        {
+            // It's not clear this could be made to work, because there has to be something rendered at the top level
+            // to describe how to load framework scripts, etc. For now just make sure nobody is confused into thinking
+            // they could do this.
+            throw new InvalidOperationException("Root components cannot specify a render mode.");
+        }
+
+        return component;
+    }
 
     /// <summary>
     /// Associates the <see cref="IComponent"/> with the <see cref="Renderer"/>, assigning
@@ -504,8 +516,9 @@ public abstract partial class Renderer : IDisposable, IAsyncDisposable
             ? FindCallerSpecifiedRenderMode(frames, frameIndex)
             : null;
 
-        var newComponent = _componentFactory.InstantiateComponent(_serviceProvider, frame.ComponentTypeField, callerSpecifiedRenderMode);
+        var newComponent = _componentFactory.InstantiateComponent(_serviceProvider, frame.ComponentTypeField, callerSpecifiedRenderMode, out var resolvedRenderMode);
         var newComponentState = AttachAndInitComponent(newComponent, parentComponentId);
+        newComponentState.RenderMode = resolvedRenderMode;
         frame.ComponentStateField = newComponentState;
         frame.ComponentIdField = newComponentState.ComponentId;
 

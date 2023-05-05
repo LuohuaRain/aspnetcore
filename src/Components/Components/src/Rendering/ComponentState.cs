@@ -62,6 +62,11 @@ public class ComponentState : IDisposable
     /// </summary>
     public ComponentState? ParentComponentState { get; }
 
+    /// <summary>
+    /// Gets the <see cref="IComponentRenderMode"/> of the component, or null if none is specified.
+    /// </summary>
+    public IComponentRenderMode? RenderMode { get; internal set; }
+
     internal RenderTreeBuilder CurrentRenderTree { get; set; }
 
     internal void RenderIntoBatch(RenderBatchBuilder batchBuilder, RenderFragment renderFragment, out Exception? renderFragmentException)
